@@ -59,6 +59,27 @@ internal static class ZitadelProvisioning
         throw new InvalidOperationException($"Zitadel PAT not found at {patPath} after 300s.");
     }
 
+    /// <summary>Reads the PAT and provisions the SPA client, retrying on 401: during a cold
+    /// first init the PAT file on disk can briefly be a previous instance's (Zitadel overwrites
+    /// it only when init finishes), so a rejection means "re-read and try again", not "stop".</summary>
+    public static async Task<(string Pat, string ClientId)> EnsureSpaClientWithFreshPatAsync(
+        string patPath, string authority, string frontendOrigin, Action<string> log, CancellationToken cancellationToken)
+    {
+        for (var attempt = 0; ; attempt++)
+        {
+            var pat = await ReadPatAsync(patPath, authority, cancellationToken);
+            try
+            {
+                return (pat, await EnsureSpaClientAsync(authority, pat, frontendOrigin, log, cancellationToken));
+            }
+            catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.Unauthorized && attempt < 60)
+            {
+                log("Zitadel: PAT rejected (401) — waiting for the fresh instance to write its own PAT…");
+                await Task.Delay(2000, cancellationToken);
+            }
+        }
+    }
+
     public static async Task<string> EnsureSpaClientAsync(
         string authority, string pat, string frontendOrigin, Action<string> log, CancellationToken cancellationToken)
     {

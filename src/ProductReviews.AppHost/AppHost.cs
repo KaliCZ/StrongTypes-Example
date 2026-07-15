@@ -130,9 +130,8 @@ builder.Eventing.Subscribe<ResourceEndpointsAllocatedEvent>(frontend.Resource, (
         try
         {
             var authority = await zitadelAuthority.Task;
-            var pat = await ZitadelProvisioning.ReadPatAsync(patPath, authority, CancellationToken.None);
-            var clientId = await ZitadelProvisioning.EnsureSpaClientAsync(
-                authority, pat, frontendOrigin, Console.WriteLine, CancellationToken.None);
+            var (pat, clientId) = await ZitadelProvisioning.EnsureSpaClientWithFreshPatAsync(
+                patPath, authority, frontendOrigin, Console.WriteLine, CancellationToken.None);
             oidc.ClientId.TrySetResult(clientId);
 
             // Isolated so a seeding hiccup never blocks sign-in for existing users.
