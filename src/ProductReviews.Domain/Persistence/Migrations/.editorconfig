@@ -1,0 +1,4 @@
+# Migrations are tool-generated; style rules don't apply to them.
+[*.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none

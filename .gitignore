@@ -55,3 +55,7 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Zitadel dev PATs written by the AppHost bind mount
+.zitadel/
+
