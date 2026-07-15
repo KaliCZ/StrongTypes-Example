@@ -67,6 +67,9 @@ dotnet_diagnostic.CS4014.severity = error
 dotnet_diagnostic.VSTHRD110.severity = error
 # Don't force the Async suffix.
 dotnet_diagnostic.VSTHRD200.severity = none
+# VSTHRD103 flags any sync call whose *Async twin exists — but EF Core's DbSet.Add/AddRange
+# are in-memory change tracking (the Async twins exist only for HiLo value generation).
+dotnet_diagnostic.VSTHRD103.severity = none
 
 # Pass CancellationToken when one is available.
 dotnet_diagnostic.CA2016.severity = error
