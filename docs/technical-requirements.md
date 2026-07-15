@@ -298,6 +298,8 @@ rating bounds) — it is the demo's headline claim.
 - **Naming:** UTC instants end in `Utc` (`CreatedAtUtc`); identifiers are
   spelled out in full — no abbreviations; private fields are camelCase without
   an underscore prefix.
+- **No local functions inside methods** — extract a normal method instead;
+  the only exception is a trivial helper of up to ~3 lines.
 - **Comments** only where they capture a non-obvious *why*; when in doubt,
   none.
 - **Exhaustive switches:** enum switch expressions never have a `default`/`_`

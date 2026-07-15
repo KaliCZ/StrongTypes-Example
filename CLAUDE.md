@@ -93,6 +93,8 @@ restart the AppHost.
 - UTC instants end in `Utc` (`CreatedAtUtc`). Identifiers are spelled out —
   no abbreviations.
 - Private fields are camelCase without an underscore prefix.
+- No local functions inside methods — extract a normal method. The only
+  exception is a trivial helper of up to ~3 lines.
 - Comments only for a non-obvious *why*, one sentence; when in doubt, none.
 - Correctness analyzer rules are build errors (see [.editorconfig](.editorconfig));
   style rules are suggestions. `TreatWarningsAsErrors` is on.
