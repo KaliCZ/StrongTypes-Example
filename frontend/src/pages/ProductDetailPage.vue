@@ -45,7 +45,10 @@ async function loadProduct(): Promise<void> {
   product.value = data;
 }
 
+let reviewsRequestSequence = 0;
+
 async function loadReviews(): Promise<void> {
+  const requestNumber = ++reviewsRequestSequence;
   const { data, error } = await api.GET("/api/products/{slug}/reviews", {
     params: {
       path: { slug: props.slug },
@@ -57,6 +60,11 @@ async function loadReviews(): Promise<void> {
       },
     },
   });
+  // A newer request superseded this one — dropping the stale response keeps
+  // rapid sort/filter changes from applying out of order.
+  if (requestNumber !== reviewsRequestSequence) {
+    return;
+  }
   if (error !== undefined || data === undefined) {
     listError.value = problemMessage(error);
     return;

@@ -16,7 +16,9 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "npm run build && dotnet run --project ../src/ProductReviews.AppHost",
+    // The AppHost builds the frontend itself (serve:e2e) so the Aspire-injected
+    // VITE_OIDC_* env is present at build time — do not pre-build here.
+    command: "dotnet run --project ../src/ProductReviews.AppHost",
     url: `${webBaseUrl}/api/products`,
     reuseExistingServer: true,
     timeout: 600_000,

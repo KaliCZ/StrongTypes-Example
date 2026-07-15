@@ -17,13 +17,18 @@ var postgres = e2e
         .WithDataVolume("productreviews-postgres-data");
 
 var productReviewsDatabase = postgres.AddDatabase("productreviews");
-var zitadelDatabase = postgres.AddDatabase("zitadel");
+// "zitadeldb", not "zitadel" — the container resource already claims that name.
+var zitadelDatabase = postgres.AddDatabase("zitadeldb");
 
 // --- Identity provider: self-hosted Zitadel (ADR-0005) -----------------------
 // Zitadel writes its first-instance machine-user PATs into this bind-mounted dir on first
-// init; the AppHost reads them to drive provisioning. Gitignored.
+// init; the AppHost reads them to drive provisioning. Gitignored. E2E gets a unique temp
+// dir: its Postgres is throwaway, so a PAT left over from a previous run would belong to a
+// dead instance and provisioning would 401.
 var repositoryRoot = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", ".."));
-var zitadelKeyDirectory = Path.Combine(repositoryRoot, ".zitadel");
+var zitadelKeyDirectory = e2e
+    ? Path.Combine(Path.GetTempPath(), $"productreviews-e2e-zitadel-{Guid.NewGuid():N}")
+    : Path.Combine(repositoryRoot, ".zitadel");
 Directory.CreateDirectory(zitadelKeyDirectory);
 // Zitadel runs as a non-root uid and must be able to create files in the bind mount on Linux;
 // Docker Desktop (Windows/macOS) ignores bind-mount permissions, so this is a no-op there.
@@ -91,7 +96,9 @@ if (!Directory.Exists(Path.Combine(frontendDirectory, "node_modules")))
     frontendInstall = builder.AddExecutable("frontend-install", npm, frontendDirectory, "ci");
 }
 
-var frontend = builder.AddNpmApp("frontend", "../../frontend", e2e ? "preview" : "dev")
+// E2E builds inside this resource (not in the Playwright harness): import.meta.env.VITE_*
+// values are baked into the bundle at BUILD time, so the build must run with this env.
+var frontend = builder.AddNpmApp("frontend", "../../frontend", e2e ? "serve:e2e" : "dev")
     .WithEnvironment("API_PROXY_TARGET", api.GetEndpoint("http"))
     .WithReference(api)
     .WaitFor(api)

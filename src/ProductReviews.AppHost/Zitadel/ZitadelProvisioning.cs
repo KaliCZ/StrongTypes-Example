@@ -288,6 +288,8 @@ internal static class ZitadelProvisioning
             ["devMode"] = true,
             ["accessTokenType"] = "OIDC_TOKEN_TYPE_JWT",
             ["accessTokenRoleAssertion"] = true,
+            // Profile claims (name) ride inside the id_token, so the SPA needs no userinfo call.
+            ["idTokenUserinfoAssertion"] = true,
         };
         if (withName)
         {

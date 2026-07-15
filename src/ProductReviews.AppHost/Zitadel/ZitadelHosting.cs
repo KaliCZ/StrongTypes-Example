@@ -60,7 +60,7 @@ internal static class ZitadelHosting
             .WithEnvironment("ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_BASEURI", LoginBaseUri)
             .WithEnvironment("ZITADEL_OIDC_DEFAULTLOGINURLV2", $"{LoginBaseUri}login?authRequest=")
             .WithEnvironment("ZITADEL_OIDC_DEFAULTLOGOUTURLV2", $"{LoginBaseUri}logout?post_logout_redirect=")
-            .WithEnvironment("ZITADEL_DATABASE_POSTGRES_DATABASE", "zitadel")
+            .WithEnvironment("ZITADEL_DATABASE_POSTGRES_DATABASE", "zitadeldb")
             .WithEnvironment("ZITADEL_DATABASE_POSTGRES_USER_USERNAME", postgresUsername)
             .WithEnvironment("ZITADEL_DATABASE_POSTGRES_USER_PASSWORD", postgresPassword)
             .WithEnvironment("ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE", "disable")

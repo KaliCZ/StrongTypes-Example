@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
+    "serve:e2e": "vite build && vite preview",
     "typecheck": "vue-tsc --noEmit",
     "generate:api": "openapi-typescript openapi.json -o src/api/schema.d.ts",
     "refresh:api": "node scripts/refresh-openapi.mjs && npm run generate:api",
