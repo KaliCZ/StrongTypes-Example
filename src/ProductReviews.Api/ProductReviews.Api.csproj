@@ -5,8 +5,9 @@
     <PackageReference Include="Kalicz.StrongTypes.AspNetCore" />
     <PackageReference Include="Kalicz.StrongTypes.OpenApi.Swashbuckle" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-    <!-- Explicit floor: the Aspire component pulls an older transitive EF that CS1705-conflicts with the Domain's. -->
+    <!-- Explicit floors: the Aspire component pulls an older transitive EF that conflicts with the Domain's at build and at runtime. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
