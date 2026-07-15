@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # GitHub Actions — grouped weekly bumps.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # Backend — NuGet versions all live in Directory.Packages.props (central
+  # package management); repo root is the entry point.
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      nuget:
+        patterns:
+          - "*"
+
+  # Frontend — npm packages from frontend/package.json.
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns:
+          - "*"

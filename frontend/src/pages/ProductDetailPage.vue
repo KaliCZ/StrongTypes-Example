@@ -30,9 +30,7 @@ const totalPages = computed(() => {
   return Math.max(1, Math.ceil(totalCount / pageSize));
 });
 
-const canWriteReview = computed(
-  () => auth.isSignedIn && product.value !== null && product.value.myReviewId == null,
-);
+const canWriteReview = computed(() => auth.isSignedIn && product.value !== null && product.value.myReviewId == null);
 
 async function loadProduct(): Promise<void> {
   const { data, error, response } = await api.GET("/api/products/{slug}", {
@@ -201,8 +199,9 @@ watch(
         <p class="rating-line">
           <StarRating :value="product.averageRating ?? null" />
           <template v-if="product.averageRating != null">
-            {{ product.averageRating.toFixed(1) }} · {{ product.reviewCount }}
-            review{{ product.reviewCount === 1 ? "" : "s" }}
+            {{ product.averageRating.toFixed(1) }} · {{ product.reviewCount }} review{{
+              product.reviewCount === 1 ? "" : "s"
+            }}
           </template>
           <template v-else>Not yet rated</template>
         </p>

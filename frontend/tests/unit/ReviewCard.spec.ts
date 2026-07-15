@@ -49,7 +49,9 @@ describe("ReviewCard", () => {
   });
 
   it("shows pros and cons lines only when present", () => {
-    const wrapper = mount(ReviewCard, { props: { review: createReview({ pros: "Light", cons: "Pricey" }), canVote: true } });
+    const wrapper = mount(ReviewCard, {
+      props: { review: createReview({ pros: "Light", cons: "Pricey" }), canVote: true },
+    });
     expect(wrapper.find(".review-pro").text()).toContain("Light");
     expect(wrapper.find(".review-con").text()).toContain("Pricey");
 

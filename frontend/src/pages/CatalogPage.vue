@@ -34,8 +34,9 @@ onMounted(async () => {
         <p class="rating-line">
           <StarRating :value="product.averageRating ?? null" />
           <template v-if="product.averageRating != null">
-            {{ product.averageRating.toFixed(1) }} · {{ product.reviewCount }}
-            review{{ product.reviewCount === 1 ? "" : "s" }}
+            {{ product.averageRating.toFixed(1) }} · {{ product.reviewCount }} review{{
+              product.reviewCount === 1 ? "" : "s"
+            }}
           </template>
           <template v-else>Not yet rated</template>
         </p>
