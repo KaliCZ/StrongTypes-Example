@@ -1,0 +1,7 @@
+# The AppHost's whole job is cross-resource orchestration: env callbacks await
+# TaskCompletionSources produced elsewhere, and fire-and-forget provisioning logs to the
+# console. The VSTHRD deadlock rules target JoinableTaskFactory contexts and misfire here.
+[*.cs]
+dotnet_diagnostic.VSTHRD002.severity = none
+dotnet_diagnostic.VSTHRD003.severity = none
+dotnet_diagnostic.VSTHRD103.severity = none

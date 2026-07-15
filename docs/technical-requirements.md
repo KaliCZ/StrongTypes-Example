@@ -255,7 +255,7 @@ class with `Configure(builder)` and, where middleware exists, `Use(app)`:
 | `Authentication.cs` | JwtBearer against Zitadel authority, `CurrentUser` accessor      |
 | `OpenApi.cs`       | Swagger UI + `AddStrongTypes()` + `Rating` schema mapping         |
 | `RateLimits.cs`    | Fixed-window limiter on write endpoints                           |
-| `ProblemDetails.cs` | Consistent RFC 7807 output for unhandled failures                |
+| `ErrorHandling.cs` | Consistent RFC 7807 output for unhandled failures                 |
 | `Observability.cs` | Health checks (`/health`, `/alive`, DbContext check)              |
 
 OpenTelemetry, service discovery, and HTTP resilience come from
