@@ -6,7 +6,12 @@ import { defineConfig } from "vite";
 // browser same-origin with the API — no CORS, no API URL in browser code (ADR-0008).
 const port = Number(process.env.PORT ?? 5173);
 const apiProxyTarget = process.env.API_PROXY_TARGET ?? "http://localhost:5000";
-const proxy = { "/api": { target: apiProxyTarget, changeOrigin: true } };
+// /swagger rides along so the OpenAPI document (and its UI) is reachable from the
+// frontend origin — the E2E contract test reads it there.
+const proxy = {
+  "/api": { target: apiProxyTarget, changeOrigin: true },
+  "/swagger": { target: apiProxyTarget, changeOrigin: true },
+};
 
 export default defineConfig({
   plugins: [vue()],
