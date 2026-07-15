@@ -5,4 +5,8 @@
     <Project Path="src/ProductReviews.Domain/ProductReviews.Domain.csproj" />
     <Project Path="src/ProductReviews.ServiceDefaults/ProductReviews.ServiceDefaults.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ProductReviews.Api.IntegrationTests/ProductReviews.Api.IntegrationTests.csproj" />
+    <Project Path="tests/ProductReviews.Domain.Tests/ProductReviews.Domain.Tests.csproj" />
+  </Folder>
 </Solution>
