@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ProductReviews.Api/ProductReviews.Api.csproj" />
+    <Project Path="src/ProductReviews.AppHost/ProductReviews.AppHost.csproj" />
+    <Project Path="src/ProductReviews.Domain/ProductReviews.Domain.csproj" />
+    <Project Path="src/ProductReviews.ServiceDefaults/ProductReviews.ServiceDefaults.csproj" />
+  </Folder>
+</Solution>

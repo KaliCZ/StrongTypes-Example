@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Kalicz.StrongTypes.AspNetCore" />
+    <PackageReference Include="Kalicz.StrongTypes.OpenApi.Swashbuckle" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProductReviews.Domain\ProductReviews.Domain.csproj" />
+    <ProjectReference Include="..\ProductReviews.ServiceDefaults\ProductReviews.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>
