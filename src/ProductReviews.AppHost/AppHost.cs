@@ -20,7 +20,7 @@ var productReviewsDatabase = postgres.AddDatabase("productreviews");
 // "zitadeldb", not "zitadel" — the container resource already claims that name.
 var zitadelDatabase = postgres.AddDatabase("zitadeldb");
 
-// --- Identity provider: self-hosted Zitadel (ADR-0005) -----------------------
+// --- Identity provider: self-hosted Zitadel (ADR-0003) -----------------------
 // Zitadel writes its first-instance machine-user PATs into this bind-mounted dir on first
 // init; the AppHost reads them to drive provisioning. Gitignored. E2E gets a unique temp
 // dir: its Postgres is throwaway, so a PAT left over from a previous run would belong to a
@@ -86,7 +86,7 @@ var api = builder.AddProject<Projects.ProductReviews_Api>("api", launchProfileNa
         }
     });
 
-// --- Frontend: Vue 3 + Vite SPA (ADR-0008) -------------------------------------
+// --- Frontend: Vue 3 + Vite SPA (ADR-0006) -------------------------------------
 // AddNpmApp only runs the script — install once when node_modules is absent and gate on it.
 var frontendDirectory = Path.Combine(repositoryRoot, "frontend");
 IResourceBuilder<ExecutableResource>? frontendInstall = null;

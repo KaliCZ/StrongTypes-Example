@@ -8,7 +8,7 @@ namespace ProductReviews.Api.Infrastructure;
 
 /// <summary>Maps the authenticated principal to the domain's <see cref="ReviewAuthor"/>.
 /// AuthorId is the SHA-256 of the OIDC <c>sub</c> claim (first 16 bytes as a Guid), so the
-/// database stays Guid-keyed whatever shape the identity provider's ids have (ADR-0005).</summary>
+/// database stays Guid-keyed whatever shape the identity provider's ids have (ADR-0003).</summary>
 public static class CurrentUser
 {
     public static ReviewAuthor Author(this ClaimsPrincipal user)

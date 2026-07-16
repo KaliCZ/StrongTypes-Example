@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { expect, test } from "@playwright/test";
 
 // The committed openapi.json is what the TypeScript client was generated from
-// (ADR-0004). If the running API's document differs, the contract drifted:
+// (ADR-0002). If the running API's document differs, the contract drifted:
 // refresh with `npm run refresh:api` (see README) and commit the result.
 test("the committed OpenAPI snapshot matches the running API", async ({ request }) => {
   const response = await request.get("/swagger/v1/swagger.json");

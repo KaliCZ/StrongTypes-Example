@@ -1,4 +1,4 @@
-# ADR-0005 — Auth is Zitadel OIDC + PKCE; author identity is a hash of `sub`
+# ADR-0003 — Auth is Zitadel OIDC + PKCE; author identity is a hash of `sub`
 
 **Status:** Accepted (2026-07-15)
 
@@ -6,7 +6,7 @@
 
 Writing reviews and voting require a signed-in user (business requirement
 "Access"), so the demo needs a real identity provider that runs locally with
-zero manual setup. The frontend is a browser SPA (ADR-0008) with no backend of
+zero manual setup. The frontend is a browser SPA (ADR-0006) with no backend of
 its own, so it cannot keep a client secret or host a BFF token exchange.
 
 ## Decision

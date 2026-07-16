@@ -1,4 +1,4 @@
-# ADR-0008 — The frontend is a Vue 3 + Vite SPA, not a server-rendered app
+# ADR-0006 — The frontend is a Vue 3 + Vite SPA, not a server-rendered app
 
 **Status:** Accepted (2026-07-15)
 
@@ -19,7 +19,7 @@ house preference (Vue reads closer to an MVC view layer).
   backend**, keeping the browser same-origin — no CORS configuration and no
   API URL in browser code. Aspire injects the proxy target as an environment
   variable.
-- All API calls go through the generated `openapi-fetch` client (ADR-0004);
+- All API calls go through the generated `openapi-fetch` client (ADR-0002);
   hand-written `fetch` calls to the API are a review blocker.
 - Frontend validation is derived from the generated schema types, not
   re-invented: the UI can pre-check what the schema states (required, min
@@ -32,6 +32,6 @@ house preference (Vue reads closer to an MVC view layer).
   for logic" rule.
 - No SEO/SSR for product pages; irrelevant for a local demo, and a future
   Nuxt migration would keep the generated-client contract intact.
-- Auth must be a browser-side OIDC flow (see ADR-0005) since there is no
+- Auth must be a browser-side OIDC flow (see ADR-0003) since there is no
   server to hold a session; the access token stays in memory, not in
   localStorage.

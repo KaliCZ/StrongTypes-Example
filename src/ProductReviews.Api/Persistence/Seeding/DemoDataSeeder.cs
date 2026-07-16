@@ -6,7 +6,7 @@ using StrongTypes;
 
 namespace ProductReviews.Api.Persistence.Seeding;
 
-/// <summary>Idempotent demo seeding (ADR-0006): runs after migrations, does nothing
+/// <summary>Idempotent demo seeding (ADR-0004): runs after migrations, does nothing
 /// once products exist, and builds everything through the domain entities so seed
 /// data satisfies the same invariants as user input.</summary>
 public static class DemoDataSeeder

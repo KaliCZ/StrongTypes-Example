@@ -12,14 +12,22 @@ governs it:
 | ---------------------------------- | ---------- |
 | Anything at all                    | [docs/technical-requirements.md](docs/technical-requirements.md) |
 | User-facing behavior               | [docs/business-requirements.md](docs/business-requirements.md) |
-| A decision that feels reversible   | The matching ADR in [docs/adr/](docs/adr/README.md) — supersede, never edit |
-| Validation, DTOs, domain types     | [ADR-0002](docs/adr/0002-validation-lives-in-the-type-system.md), [ADR-0003](docs/adr/0003-business-errors-are-result-enums.md) |
-| API surface / frontend types       | [ADR-0004](docs/adr/0004-openapi-is-the-frontend-contract.md) |
-| Auth                               | [ADR-0005](docs/adr/0005-auth-zitadel-oidc-pkce.md) |
-| Tests                              | [ADR-0007](docs/adr/0007-tests-use-real-dependencies.md) |
+| A decision that feels reversible   | The matching ADR in [docs/adr/](docs/adr/README.md) |
+| Validation, DTOs, domain types     | [ADR-0002](docs/adr/0002-validation-lives-in-the-type-system.md), [ADR-0001](docs/adr/0001-vertical-slices-and-project-layout.md) |
+| API surface / frontend types       | [ADR-0002](docs/adr/0002-validation-lives-in-the-type-system.md) |
+| Auth                               | [ADR-0003](docs/adr/0003-auth-zitadel-oidc-pkce.md) |
+| Tests                              | [ADR-0005](docs/adr/0005-tests-use-real-dependencies.md) |
 
 If a change contradicts a doc, change the doc in the same PR — or don't make
 the change.
+
+**ADRs are the current design, never a change history.** Every ADR describes
+how the application works *now*. Changing or rolling back a decision means
+rewriting the matching ADR to the new thinking, in the same PR — git holds
+the history. Never mark an ADR superseded, and never add a new ADR for an
+aspect an existing one covers; new numbers are only for new aspects. A
+rolled-back approach usually earns a line under "Alternatives considered"
+or "Previous implementation".
 
 ## Commands
 
@@ -44,7 +52,7 @@ restart the AppHost.
 
 1. **Vertical slices.** A feature lives in `Features/<Feature>/` — one folder,
    everything it owns inside: entities, handlers + error enums, controller,
-   DTOs, mapping (ADR-0009). This applies to infrastructure too: one concern
+   DTOs, mapping (ADR-0001). This applies to infrastructure too: one concern
    per file (`Infrastructure/RateLimits.cs`, `Health.cs`, …) with
    `Configure(...)`/`Use(...)` statics. No grab-bag `ServiceExtensions`.
    Entities and handlers still never touch HTTP — `HttpContext`, action

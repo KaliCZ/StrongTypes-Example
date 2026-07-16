@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace ProductReviews.Api.IntegrationTests;
 
 /// <summary>Mints JWTs against a test-owned symmetric key. The API's real JwtBearer
-/// pipeline validates them (ADR-0007) — only the trust anchor is swapped, not the code path.</summary>
+/// pipeline validates them (ADR-0005) — only the trust anchor is swapped, not the code path.</summary>
 public static class TestTokens
 {
     public const string Issuer = "https://tests.productreviews.local";
