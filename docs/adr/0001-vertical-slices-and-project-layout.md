@@ -1,6 +1,6 @@
-# ADR-0001 — Vertical feature slices in two projects; controllers, no MediatR
+# ADR-0001 — Vertical feature slices in one API project; controllers, no MediatR
 
-**Status:** Superseded by [ADR-0009](0009-single-api-project.md) (2026-07-16)
+**Status:** Accepted (2026-07-15, revised 2026-07-16)
 
 ## Context
 
@@ -8,51 +8,53 @@ The codebase has two jobs: demonstrate StrongTypes end to end, and serve as a
 starter template. Both jobs punish accidental complexity. A classic onion
 (`Api` → `Application` → `Domain` → `Infrastructure` + repositories +
 MediatR) scatters one feature across four projects and buries the
-StrongTypes story under ceremony; a single flat project loses the
-compiler-enforced rule that HTTP concerns never leak into business code.
+StrongTypes story under ceremony — and even a two-project API/domain split
+keeps every slice half-complete, with the feature folder always missing its
+key domain objects.
 
 ## Decision
 
-Two application projects with one compiler-enforced dependency edge, both
+One backend project, `ProductReviews.Api` (next to the Aspire AppHost),
 organized **by feature, not by layer**:
 
-- **`ProductReviews.Api`** — the HTTP boundary. `Features/<Feature>/` holds
-  the controller, its request/response DTOs, and the mapping between DTOs and
-  domain models. `Infrastructure/` holds one file per cross-cutting concern
-  (`Authentication.cs`, `OpenApi.cs`, `RateLimits.cs`, …), each a static class
-  with `Configure(...)`/`Use(...)` — `Program.cs` is a thin orchestrator and
-  there is no grab-bag `ServiceCollectionExtensions`.
-- **`ProductReviews.Domain`** — everything else. `<Feature>/` folders hold the
-  entities and one file per operation (`SubmitReview.cs` = handler class +
-  its error enum). `Persistence/` holds the `DbContext`, entity
-  configurations, migrations, and the seeder. EF Core is used directly as a
-  library — no repository interfaces wrapping it.
+- **`Features/<Feature>/`** holds the whole slice: entities, handlers with
+  their error enums, the controller, request/response DTOs, and the mapping
+  between them.
+- **`Persistence/`** holds the `DbContext`, entity configurations, migrations,
+  and the seeder. EF Core is used directly as a library — no repository
+  interfaces wrapping it.
+- **`Infrastructure/`** holds one file per cross-cutting concern
+  (`Authentication.cs`, `OpenApi.cs`, `RateLimits.cs`, `Observability.cs`,
+  `Health.cs`, …), each a static class with `Configure(...)`/`Use(...)` —
+  `Program.cs` is a thin orchestrator and there is no grab-bag
+  `ServiceCollectionExtensions`.
+- **HTTP stays out of the domain by review, not by compiler.** Entities and
+  handlers never touch `HttpContext`, action results, or DTOs; those live
+  only in controllers.
 - **Controllers, not minimal APIs** — controller classes group a feature's
   endpoints, give Swashbuckle first-class metadata, and keep binding,
   auth attributes, and `ProducesResponseType` declarations in one reviewable
   place per feature.
 - **No MediatR / no dispatch layer.** Controllers inject concrete handler
-  classes. A handler is a class with one public method; DI registration is a
-  per-project `AddDomain()` extension.
+  classes. A handler is a class with one public method; DI registration is
+  `Infrastructure/DomainServices.cs`.
 - **DTOs are a dedicated API-layer contract.** Domain entities and read
   models are never serialized. Handlers return domain models
   (`Result<Review, SubmitReviewError>`); the controller maps success models
-  to response DTOs and error enums to HTTP — both directions live in the API
-  slice.
+  to response DTOs and error enums to HTTP.
 - **Read paths return proof-of-loading models, not entities.** A query
   handler owns a single query method with its `Include` chain and projects
   into an immutable record whose constructor requires every loaded
-  relationship (e.g. `ReviewWithViewerContext`). If it isn't loaded, the
+  relationship (e.g. `ReviewWithVotes`). If it isn't loaded, the
   model cannot be constructed — no lazy-loading surprises, no
   possibly-null navigations downstream.
 
 ## Consequences
 
-- A feature is one folder in each of two projects; deleting a feature is
-  deleting two folders. Review diffs stay feature-local.
-- The `Api → Domain` project reference makes "domain never sees HTTP"
-  structural; the missing reverse reference makes "HTTP never bypasses the
-  domain" reviewable at a glance.
+- A feature is one folder; deleting a feature is deleting one folder plus its
+  EF configuration. Review diffs stay feature-local.
+- "Domain never sees HTTP" needs review attention: no project edge enforces
+  it, only the rule that DTO mapping happens exclusively in controllers.
 - No runtime dispatch magic: navigation is F12, stack traces are honest, and
   the template stays approachable for readers new to the stack.
 - The cost of not abstracting EF: swapping the persistence technology means
@@ -64,6 +66,10 @@ organized **by feature, not by layer**:
 - **Onion/Clean Architecture with repositories** — rejected: doubles the file
   count per feature and hides the `UseStrongTypes()` EF integration behind
   interfaces, which is the opposite of a showcase.
+- **A separate domain project with a compiler-enforced dependency edge** —
+  tried first and rolled back: every feature lived in two half-folders, the
+  slice never owned its domain objects, and the edge protected a boundary
+  that review can hold.
 - **Minimal APIs** — rejected: endpoint metadata and per-route filters get
   re-invented per endpoint, and the controller + `ModelState` +
   `ValidationProblem` pipeline is exactly what the StrongTypes ASP.NET

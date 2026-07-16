@@ -51,7 +51,7 @@ flowchart LR
 ├── docs/                          # this spec: requirements + ADRs
 ├── src/
 │   ├── ProductReviews.AppHost/          # Aspire orchestration + Zitadel provisioning
-│   └── ProductReviews.Api/              # the whole backend (ADR-0009)
+│   └── ProductReviews.Api/              # the whole backend (ADR-0001)
 │       ├── Features/                    # a folder owns its entire slice
 │       │   ├── Catalog/                 # Product entity + queries + controller + DTOs
 │       │   ├── Reviews/                 # Review, Rating, handlers + controller + DTOs
@@ -77,8 +77,7 @@ flowchart LR
 Each of these is an ADR; the numbered file is the authority:
 
 - Feature slices in one API project, controllers, no MediatR, DTO layer owned
-  by the API, proof-of-loading read models — [ADR-0009](adr/0009-single-api-project.md)
-  (supersedes [ADR-0001](adr/0001-vertical-slices-and-project-layout.md))
+  by the API, proof-of-loading read models — [ADR-0001](adr/0001-vertical-slices-and-project-layout.md)
 - Strong types are the only validation; no annotations, no guards — [ADR-0002](adr/0002-validation-lives-in-the-type-system.md)
 - `Result<T, TError>` + error enums; controllers map to HTTP — [ADR-0003](adr/0003-business-errors-are-result-enums.md)
 - OpenAPI is the frontend contract; client generated + drift-checked — [ADR-0004](adr/0004-openapi-is-the-frontend-contract.md)
