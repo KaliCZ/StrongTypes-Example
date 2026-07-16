@@ -1,5 +1,5 @@
 using Microsoft.OpenApi;
-using ProductReviews.Domain.Reviews;
+using ProductReviews.Api.Features.Reviews;
 using StrongTypes.OpenApi.Swashbuckle;
 
 namespace ProductReviews.Api.Infrastructure;

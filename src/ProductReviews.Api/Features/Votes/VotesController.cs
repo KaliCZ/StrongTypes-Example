@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using ProductReviews.Api.Infrastructure;
-using ProductReviews.Domain.Votes;
 using StrongTypes;
 
 namespace ProductReviews.Api.Features.Votes;

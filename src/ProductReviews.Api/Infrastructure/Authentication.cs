@@ -20,7 +20,8 @@ public static class Authentication
         var audience = builder.Configuration["Oidc:Audience"];
 
         builder.Services.AddMemoryCache();
-        builder.Services.AddHttpClient(UserinfoClientName);
+        // Per-client resilience, not ConfigureHttpClientDefaults — nothing blanket-global.
+        builder.Services.AddHttpClient(UserinfoClientName).AddStandardResilienceHandler();
 
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

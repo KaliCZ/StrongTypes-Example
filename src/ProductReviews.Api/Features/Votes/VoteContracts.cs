@@ -1,4 +1,3 @@
-using ProductReviews.Domain.Votes;
 
 namespace ProductReviews.Api.Features.Votes;
 
