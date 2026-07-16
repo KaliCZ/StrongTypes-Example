@@ -105,7 +105,8 @@ restart the AppHost.
 
 - UTC instants end in `Utc` (`CreatedAtUtc`). Identifiers are spelled out —
   no abbreviations.
-- Private fields are camelCase without an underscore prefix.
+- Private fields are camelCase without an underscore prefix; private
+  constants and static readonly fields are PascalCase.
 - No nested local functions — write a normal method. Don't reach for local
   functions; extract a private method instead. A one-liner local function can
   occasionally be acceptable, but that's an edge case, not something to aim

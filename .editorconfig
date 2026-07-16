@@ -23,7 +23,29 @@ trim_trailing_whitespace = false
 
 [*.cs]
 # --- Naming ------------------------------------------------------------
-# Private fields are camelCase with no underscore prefix.
+# Naming rules only surface in the IDE unless IDE1006 itself has a severity.
+dotnet_diagnostic.IDE1006.severity = warning
+
+# Private constants — including static readonly, constants in spirit — are PascalCase.
+dotnet_naming_rule.private_constants_are_pascal_case.severity = warning
+dotnet_naming_rule.private_constants_are_pascal_case.symbols = private_constants
+dotnet_naming_rule.private_constants_are_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.private_constants.applicable_kinds = field
+dotnet_naming_symbols.private_constants.applicable_accessibilities = private
+dotnet_naming_symbols.private_constants.required_modifiers = const
+
+dotnet_naming_rule.private_static_readonly_fields_are_pascal_case.severity = warning
+dotnet_naming_rule.private_static_readonly_fields_are_pascal_case.symbols = private_static_readonly_fields
+dotnet_naming_rule.private_static_readonly_fields_are_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.private_static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.private_static_readonly_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_readonly_fields.required_modifiers = static, readonly
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# All other private fields are camelCase with no underscore prefix.
 dotnet_naming_rule.private_fields_are_camel_case.severity = warning
 dotnet_naming_rule.private_fields_are_camel_case.symbols = private_fields
 dotnet_naming_rule.private_fields_are_camel_case.style = camel_case_style

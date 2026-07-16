@@ -304,7 +304,8 @@ manipulates state itself (seeding through EF, reflection as a last resort).
 
 - **Naming:** UTC instants end in `Utc` (`CreatedAtUtc`); identifiers are
   spelled out in full — no abbreviations; private fields are camelCase without
-  an underscore prefix.
+  an underscore prefix, while private constants and static readonly fields are
+  PascalCase.
 - **No nested local functions — write a normal method.** Don't reach for
   local functions; extract a private method instead. A one-liner local
   function can occasionally be acceptable, but that's an edge case, not

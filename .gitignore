@@ -56,6 +56,9 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
+# JetBrains Rider
+.idea/
+
 # Zitadel dev PATs written by the AppHost bind mount
 .zitadel/
 
