@@ -13,7 +13,7 @@ public sealed class ReviewsApiFactory(string connectionString) : WebApplicationF
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        // Development runs the real migrate + seed path at startup (ADR-0006) —
+        // Development runs the real migrate + seed path at startup (ADR-0004) —
         // the tests exercise it instead of preparing the schema themselves.
         builder.UseEnvironment("Development");
         builder.UseSetting("ConnectionStrings:productreviews", connectionString);
@@ -34,7 +34,7 @@ public sealed class ReviewsApiFactory(string connectionString) : WebApplicationF
     }
 }
 
-/// <summary>One Postgres container + one API host for the whole run (ADR-0007);
+/// <summary>One Postgres container + one API host for the whole run (ADR-0005);
 /// tests isolate through unique authors/products, never by resetting the database.</summary>
 public sealed class SharedApiContext : IAsyncLifetime
 {

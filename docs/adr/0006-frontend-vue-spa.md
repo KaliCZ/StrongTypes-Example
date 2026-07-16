@@ -1,4 +1,4 @@
-# ADR-0008 — The frontend is a Vue 3 + Vite SPA, not a server-rendered app
+# ADR-0006 — The frontend is a Vue 3 + Vite SPA, not a server-rendered app
 
 **Status:** Accepted (2026-07-15)
 
@@ -32,6 +32,6 @@ house preference (Vue reads closer to an MVC view layer).
   for logic" rule.
 - No SEO/SSR for product pages; irrelevant for a local demo, and a future
   Nuxt migration would keep the generated-client contract intact.
-- Auth must be a browser-side OIDC flow (see ADR-0005) since there is no
+- Auth must be a browser-side OIDC flow (see ADR-0003) since there is no
   server to hold a session; the access token stays in memory, not in
   localStorage.

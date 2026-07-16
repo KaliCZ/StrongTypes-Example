@@ -19,12 +19,12 @@ into the database and back out into the generated TypeScript client.
 | Validation      | `Kalicz.StrongTypes` types only — no data annotations (ADR-0002)        |
 | Error handling  | `Result<T, TError>` + per-operation error enums (ADR-0001)              |
 | Persistence     | PostgreSQL via EF Core (Npgsql), `.UseStrongTypes()`                    |
-| Auth            | Zitadel (OIDC, PKCE SPA client) + `JwtBearer` (ADR-0005)                |
+| Auth            | Zitadel (OIDC, PKCE SPA client) + `JwtBearer` (ADR-0003)                |
 | API docs        | Swashbuckle + `Kalicz.StrongTypes.OpenApi.Swashbuckle` (ADR-0002)       |
-| Frontend        | Vue 3 + Vite + TypeScript SPA (ADR-0008)                                |
+| Frontend        | Vue 3 + Vite + TypeScript SPA (ADR-0006)                                |
 | Frontend client | Generated: `openapi-typescript` types + `openapi-fetch` runtime         |
 | Orchestration   | .NET Aspire AppHost: Postgres, Zitadel, API, frontend                   |
-| Backend tests   | xUnit + FsCheck (property) + Testcontainers Postgres (ADR-0007)         |
+| Backend tests   | xUnit + FsCheck (property) + Testcontainers Postgres (ADR-0005)         |
 | Frontend tests  | Vitest (unit/component) + Playwright (E2E against the real stack)       |
 
 ```mermaid
@@ -81,10 +81,10 @@ Each of these is an ADR; the numbered file is the authority:
   proof-of-loading read models — [ADR-0001](adr/0001-vertical-slices-and-project-layout.md)
 - Strong types are the only validation, and the constraints flow through
   OpenAPI into the generated, drift-checked frontend client — [ADR-0002](adr/0002-validation-lives-in-the-type-system.md)
-- Zitadel OIDC + PKCE; `AuthorId` = SHA-256 of `sub` — [ADR-0005](adr/0005-auth-zitadel-oidc-pkce.md)
-- Seeding at startup, never in migrations — [ADR-0006](adr/0006-seeding-at-startup-not-migrations.md)
-- Real dependencies in tests, no mocks — [ADR-0007](adr/0007-tests-use-real-dependencies.md)
-- Vue 3 + Vite SPA, same-origin proxy to the API — [ADR-0008](adr/0008-frontend-vue-spa.md)
+- Zitadel OIDC + PKCE; `AuthorId` = SHA-256 of `sub` — [ADR-0003](adr/0003-auth-zitadel-oidc-pkce.md)
+- Seeding at startup, never in migrations — [ADR-0004](adr/0004-seeding-at-startup-not-migrations.md)
+- Real dependencies in tests, no mocks — [ADR-0005](adr/0005-tests-use-real-dependencies.md)
+- Vue 3 + Vite SPA, same-origin proxy to the API — [ADR-0006](adr/0006-frontend-vue-spa.md)
 
 ## 4. Domain model
 
@@ -215,7 +215,7 @@ DTO rules:
   `ValidationProblem` with a field key; missing resources become 404;
   ownership violations become 403; duplicates become 409.
 
-## 7. Auth (summary — ADR-0005 is the authority)
+## 7. Auth (summary — ADR-0003 is the authority)
 
 Zitadel runs as an Aspire-managed container; the AppHost idempotently
 provisions the org/project/PKCE SPA client and two demo users, and injects
@@ -269,7 +269,7 @@ deploy gate can grep the running build.
   databases: `productreviews`, `zitadel`), Zitadel (+ its login UI
   container), the API, and the frontend dev server; installs frontend
   dependencies on first run; provisions Zitadel; and opens the dashboard.
-- The API migrates (`MigrateAsync`) and seeds (ADR-0006) at startup in
+- The API migrates (`MigrateAsync`) and seeds (ADR-0004) at startup in
   Development. Ten products with reviews and votes are browsable immediately.
 - Fixed ports where the browser needs stability (Zitadel issuer `:8090`,
   frontend `:5173` dev / `:4173` E2E); everything else is dynamic and flows
@@ -289,7 +289,7 @@ deploy gate can grep the running build.
 Test conventions: `Method_Condition_ExpectedResult` naming; integration tests
 send anonymous objects and assert on raw `JsonElement`s (contract renames must
 fail tests); one shared Postgres container per run, isolation via unique data
-per test; no mocking anywhere (ADR-0007). The OpenAPI document itself is
+per test; no mocking anywhere (ADR-0005). The OpenAPI document itself is
 asserted in integration tests (email format, `minLength`, `exclusiveMinimum`,
 rating bounds) — it is the demo's headline claim.
 

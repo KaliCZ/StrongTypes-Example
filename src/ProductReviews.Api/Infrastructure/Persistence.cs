@@ -17,7 +17,7 @@ public static class Persistence
             configureSettings: settings => settings.DisableHealthChecks = true,
             configureDbContextOptions: options => options.UseStrongTypes());
 
-    /// <summary>Development-only convenience (ADR-0006): production applies migrations
+    /// <summary>Development-only convenience (ADR-0004): production applies migrations
     /// from the deploy pipeline and never seeds.</summary>
     public static async Task MigrateAndSeedAsync(WebApplication app)
     {

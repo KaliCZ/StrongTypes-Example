@@ -80,7 +80,7 @@ npm --prefix frontend run test:e2e
 ```
 
 Nothing is mocked anywhere — see
-[ADR-0007](docs/adr/0007-tests-use-real-dependencies.md).
+[ADR-0005](docs/adr/0005-tests-use-real-dependencies.md).
 
 ## The spec
 
