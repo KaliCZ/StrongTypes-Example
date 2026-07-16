@@ -122,6 +122,13 @@ restart the AppHost.
   functions; extract a private method instead. A one-liner local function can
   occasionally be acceptable, but that's an edge case, not something to aim
   for.
+- Brace a loop or conditional body unless it's a true one-liner; a body that
+  spans multiple lines (a multi-line call, an object initializer) takes braces
+  even as a single statement, and a long method braces even its one-liners.
+- No `default`/discard arm in a `switch` over an enum or a type we own — an
+  exhaustive expression lets the compiler break the build on a new value
+  (`CS8509` is an error; see rule 5 and [.editorconfig](.editorconfig)); a
+  `default` is only for open input we don't control.
 - Comments only for a non-obvious *why*, one sentence; when in doubt, none.
 - Correctness analyzer rules are build errors (see [.editorconfig](.editorconfig));
   style rules are suggestions. `TreatWarningsAsErrors` is on.
