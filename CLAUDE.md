@@ -26,7 +26,8 @@ how the application works *now*. Changing or rolling back a decision means
 rewriting the matching ADR to the new thinking, in the same PR — git holds
 the history. Never mark an ADR superseded, and never add a new ADR for an
 aspect an existing one covers; new numbers are only for new aspects. A
-rolled-back approach usually earns a line under "Alternatives considered".
+rolled-back approach usually earns a line under "Alternatives considered"
+or "Previous implementation".
 
 ## Commands
 
