@@ -293,12 +293,13 @@ per test; no mocking anywhere (ADR-0007). The OpenAPI document itself is
 asserted in integration tests (email format, `minLength`, `exclusiveMinimum`,
 rating bounds) — it is the demo's headline claim.
 
-**Tests never reshape production code.** No signature, visibility, setter, or
-constructor on a domain entity or business operation ever changes to
-accommodate a test — no test-only overloads, no `InternalsVisibleTo`. Tests
-reach the state they need through the public domain API or dependency
-injection; when neither suffices, the test manipulates state itself (seeding
-through EF, reflection as a last resort).
+**Tests never reshape production code.** The domain model is designed for the
+domain, not for testability. No signature, visibility, setter, or constructor
+on a domain entity or business operation ever changes to accommodate a test —
+no test-only overloads, no `InternalsVisibleTo`. If a test needs some
+capability, the test figures out how to achieve it: through the public domain
+API or dependency injection; when neither suffices, by manipulating state
+itself (seeding through EF, reflection as a last resort).
 
 ## 12. Coding conventions
 
@@ -307,6 +308,12 @@ through EF, reflection as a last resort).
   an underscore prefix.
 - **No local functions inside methods** — extract a normal method instead;
   the only exception is a trivial helper of up to ~3 lines.
+- **Entity Framework: set the navigation property together with the FK** —
+  when assigning a relationship by id (e.g. `ProductId`), also assign the
+  navigation property, in constructors, factory methods, and setters alike,
+  so the navigation is usable and non-null right after the call; for
+  performance-sensitive batch inserts it's fine to set only the id rather
+  than load entities nothing will read.
 - **Comments** only where they capture a non-obvious *why*; when in doubt,
   none.
 - **Exhaustive switches:** enum switch expressions never have a `default`/`_`

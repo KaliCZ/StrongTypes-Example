@@ -70,27 +70,35 @@ restart the AppHost.
    constructors demand the loaded data (`ProductWithReviews`,
    `ReviewWithVotes` via `CompleteQueries`) — never pass entities around and
    hope the navigation was included.
-8. **Denormalized aggregates are recomputed, never incremented** — always from
+8. **EF: set the navigation property together with the FK.** When assigning a
+   relationship by id (e.g. `ProductId`), also assign the navigation property
+   (`Product`) — in constructors, factory methods, and setters alike — so the
+   navigation is usable and non-null right after the call. The exception is
+   performance-sensitive batch work (inserting thousands of rows), where it's
+   fine to set only the id rather than load entities nothing will read.
+9. **Denormalized aggregates are recomputed, never incremented** — always from
    source rows, in the same `SaveChanges`.
-9. **Seeding happens at startup** (idempotent, through domain entities), never
-   in migrations. Migrations are schema-only and tool-generated — never edit
-   them by hand.
-10. **Tests use real dependencies.** No mocking libraries. Integration tests
+10. **Seeding happens at startup** (idempotent, through domain entities), never
+    in migrations. Migrations are schema-only and tool-generated — never edit
+    them by hand.
+11. **Tests use real dependencies.** No mocking libraries. Integration tests
     assert raw JSON from anonymous payloads; property tests generate
     strong-typed values (`Kalicz.StrongTypes.FsCheck`). E2E signs in through
     the real Zitadel form.
-11. **Tests never reshape production code.** No signature, visibility, setter,
-    or constructor on a domain entity or business operation ever changes to
-    accommodate a test — no test-only overloads, no `InternalsVisibleTo`.
-    Tests reach the state they need through the public domain API or
-    dependency injection; when neither suffices, the test manipulates state
-    itself (seed through EF, reflection as a last resort).
-12. **The OpenAPI document is the frontend contract.** Frontend code only
+12. **Tests never reshape production code.** The domain model is designed for
+    the domain, not for testability. No signature, visibility, setter, or
+    constructor on a domain entity or business operation ever changes to
+    accommodate a test — no test-only overloads, no `InternalsVisibleTo`. If a
+    test needs some capability, the test figures out how to achieve it:
+    through the public domain API or dependency injection; when neither
+    suffices, by manipulating state itself (seed through EF, reflection as a
+    last resort).
+13. **The OpenAPI document is the frontend contract.** Frontend code only
     calls the API through the generated `openapi-fetch` client. After changing
     any DTO/route: run the stack, `npm --prefix frontend run refresh:api`,
     commit `openapi.json` + `schema.d.ts` together with the API change — the
     E2E contract test fails otherwise.
-13. **Nothing blanket-global.** `[Authorize]` per action (no
+14. **Nothing blanket-global.** `[Authorize]` per action (no
     `RequireAuthorization()` on the route table), ServiceDefaults in its own
     namespace, no global route middleware in the frontend.
 
