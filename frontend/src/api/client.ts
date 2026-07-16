@@ -1,7 +1,7 @@
 import createClient, { type Middleware } from "openapi-fetch";
 import type { components, paths } from "./schema";
 
-// Convenience aliases over the generated schema — the ONLY source of API types (ADR-0004).
+// Convenience aliases over the generated schema — the ONLY source of API types (ADR-0002).
 export type ProductSummary = components["schemas"]["ProductSummaryResponse"];
 export type ProductDetail = components["schemas"]["ProductDetailResponse"];
 export type Review = components["schemas"]["ReviewResponse"];

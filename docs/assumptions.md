@@ -6,11 +6,11 @@ Each is easy to reverse — flag any that should go the other way.
 
 1. **Vue 3 + Vite SPA, not Nuxt.** The brief mentioned both a Nuxt preference
    and an explicit "Vue 3 + Vite" stack line; the explicit stack line won
-   (ADR-0008). A Nuxt rewrite would keep the generated-client contract
+   (ADR-0006). A Nuxt rewrite would keep the generated-client contract
    intact.
 2. **Zitadel is in.** The stack list dropped only Temporal and Redis, so the
    earlier "Zitadel for auth" instruction stands: writes require a real OIDC
-   sign-in (ADR-0005). If the demo should run auth-free, the AppHost and the
+   sign-in (ADR-0003). If the demo should run auth-free, the AppHost and the
    `[Authorize]` attributes are the only touchpoints.
 3. **No moderation at all.** Dropping Temporal removed the durable moderation
    workflows; rather than fake the rules synchronously (1/2/5-star reviews

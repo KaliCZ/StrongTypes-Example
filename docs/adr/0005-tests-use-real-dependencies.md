@@ -1,4 +1,4 @@
-# ADR-0007 — Tests exercise real dependencies; nothing is mocked
+# ADR-0005 — Tests exercise real dependencies; nothing is mocked
 
 **Status:** Accepted (2026-07-15)
 
