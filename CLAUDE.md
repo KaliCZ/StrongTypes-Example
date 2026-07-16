@@ -70,21 +70,34 @@ restart the AppHost.
    constructors demand the loaded data (`ProductWithReviews`,
    `ReviewWithVotes` via `CompleteQueries`) — never pass entities around and
    hope the navigation was included.
-8. **Denormalized aggregates are recomputed, never incremented** — always from
+8. **Entity Framework: set the navigation property together with the FK.**
+   When assigning a relationship by ID (e.g. `ProductId`), also assign the
+   navigation property (`Product`) — in constructors, factory methods, and
+   setters alike — so that right after the call, `something.Product` is
+   usable and non-null. The exception is performance-sensitive work like
+   inserting thousands of rows in a batch: there it's fine to set only the ID
+   rather than load entities into memory that nothing will read.
+9. **Denormalized aggregates are recomputed, never incremented** — always from
    source rows, in the same `SaveChanges`.
-9. **Seeding happens at startup** (idempotent, through domain entities), never
-   in migrations. Migrations are schema-only and tool-generated — never edit
-   them by hand.
-10. **Tests use real dependencies.** No mocking libraries. Integration tests
+10. **Seeding happens at startup** (idempotent, through domain entities), never
+    in migrations. Migrations are schema-only and tool-generated — never edit
+    them by hand.
+11. **Tests use real dependencies.** No mocking libraries. Integration tests
     assert raw JSON from anonymous payloads; property tests generate
     strong-typed values (`Kalicz.StrongTypes.FsCheck`). E2E signs in through
     the real Zitadel form.
-11. **The OpenAPI document is the frontend contract.** Frontend code only
+12. **Tests never reshape production code.** We use DDD: the domain model is
+    designed for the domain, not for testability. If a test needs some
+    capability, the test figures out how to achieve it — never add methods,
+    parameters, setters, or hooks to production code just so a test can reach
+    something. Dependency injection should be enough; otherwise the test
+    manipulates state itself (seed through EF, reflection as a last resort).
+13. **The OpenAPI document is the frontend contract.** Frontend code only
     calls the API through the generated `openapi-fetch` client. After changing
     any DTO/route: run the stack, `npm --prefix frontend run refresh:api`,
     commit `openapi.json` + `schema.d.ts` together with the API change — the
     E2E contract test fails otherwise.
-12. **Nothing blanket-global.** `[Authorize]` per action (no
+14. **Nothing blanket-global.** `[Authorize]` per action (no
     `RequireAuthorization()` on the route table), ServiceDefaults in its own
     namespace, no global route middleware in the frontend.
 
@@ -93,6 +106,10 @@ restart the AppHost.
 - UTC instants end in `Utc` (`CreatedAtUtc`). Identifiers are spelled out —
   no abbreviations.
 - Private fields are camelCase without an underscore prefix.
+- No nested local functions — write a normal method. Don't reach for local
+  functions; extract a private method instead. A one-liner local function can
+  occasionally be acceptable, but that's an edge case, not something to aim
+  for.
 - Comments only for a non-obvious *why*, one sentence; when in doubt, none.
 - Correctness analyzer rules are build errors (see [.editorconfig](.editorconfig));
   style rules are suggestions. `TreatWarningsAsErrors` is on.
