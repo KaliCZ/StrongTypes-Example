@@ -293,6 +293,13 @@ per test; no mocking anywhere (ADR-0007). The OpenAPI document itself is
 asserted in integration tests (email format, `minLength`, `exclusiveMinimum`,
 rating bounds) — it is the demo's headline claim.
 
+**Tests never reshape production code.** No signature, visibility, setter, or
+constructor on a domain entity or business operation ever changes to
+accommodate a test — no test-only overloads, no `InternalsVisibleTo`. Tests
+reach the state they need through the public domain API or dependency
+injection; when neither suffices, the test manipulates state itself (seeding
+through EF, reflection as a last resort).
+
 ## 12. Coding conventions
 
 - **Naming:** UTC instants end in `Utc` (`CreatedAtUtc`); identifiers are

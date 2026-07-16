@@ -79,12 +79,18 @@ restart the AppHost.
     assert raw JSON from anonymous payloads; property tests generate
     strong-typed values (`Kalicz.StrongTypes.FsCheck`). E2E signs in through
     the real Zitadel form.
-11. **The OpenAPI document is the frontend contract.** Frontend code only
+11. **Tests never reshape production code.** No signature, visibility, setter,
+    or constructor on a domain entity or business operation ever changes to
+    accommodate a test — no test-only overloads, no `InternalsVisibleTo`.
+    Tests reach the state they need through the public domain API or
+    dependency injection; when neither suffices, the test manipulates state
+    itself (seed through EF, reflection as a last resort).
+12. **The OpenAPI document is the frontend contract.** Frontend code only
     calls the API through the generated `openapi-fetch` client. After changing
     any DTO/route: run the stack, `npm --prefix frontend run refresh:api`,
     commit `openapi.json` + `schema.d.ts` together with the API change — the
     E2E contract test fails otherwise.
-12. **Nothing blanket-global.** `[Authorize]` per action (no
+13. **Nothing blanket-global.** `[Authorize]` per action (no
     `RequireAuthorization()` on the route table), ServiceDefaults in its own
     namespace, no global route middleware in the frontend.
 
