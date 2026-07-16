@@ -17,10 +17,10 @@ into the database and back out into the generated TypeScript client.
 | --------------- | ---------------------------------------------------------------------- |
 | Backend         | ASP.NET Core Web API, controllers (ADR-0001), C# 14 / `net10.0`         |
 | Validation      | `Kalicz.StrongTypes` types only — no data annotations (ADR-0002)        |
-| Error handling  | `Result<T, TError>` + per-operation error enums (ADR-0003)              |
+| Error handling  | `Result<T, TError>` + per-operation error enums (ADR-0001)              |
 | Persistence     | PostgreSQL via EF Core (Npgsql), `.UseStrongTypes()`                    |
 | Auth            | Zitadel (OIDC, PKCE SPA client) + `JwtBearer` (ADR-0005)                |
-| API docs        | Swashbuckle + `Kalicz.StrongTypes.OpenApi.Swashbuckle` (ADR-0004)       |
+| API docs        | Swashbuckle + `Kalicz.StrongTypes.OpenApi.Swashbuckle` (ADR-0002)       |
 | Frontend        | Vue 3 + Vite + TypeScript SPA (ADR-0008)                                |
 | Frontend client | Generated: `openapi-typescript` types + `openapi-fetch` runtime         |
 | Orchestration   | .NET Aspire AppHost: Postgres, Zitadel, API, frontend                   |
@@ -76,11 +76,11 @@ flowchart LR
 
 Each of these is an ADR; the numbered file is the authority:
 
-- Feature slices in one API project, controllers, no MediatR, DTO layer owned
-  by the API, proof-of-loading read models — [ADR-0001](adr/0001-vertical-slices-and-project-layout.md)
-- Strong types are the only validation; no annotations, no guards — [ADR-0002](adr/0002-validation-lives-in-the-type-system.md)
-- `Result<T, TError>` + error enums; controllers map to HTTP — [ADR-0003](adr/0003-business-errors-are-result-enums.md)
-- OpenAPI is the frontend contract; client generated + drift-checked — [ADR-0004](adr/0004-openapi-is-the-frontend-contract.md)
+- Feature slices in one API project, controllers, no MediatR, `Result` error
+  enums mapped to HTTP in controllers, DTO layer owned by the API,
+  proof-of-loading read models — [ADR-0001](adr/0001-vertical-slices-and-project-layout.md)
+- Strong types are the only validation, and the constraints flow through
+  OpenAPI into the generated, drift-checked frontend client — [ADR-0002](adr/0002-validation-lives-in-the-type-system.md)
 - Zitadel OIDC + PKCE; `AuthorId` = SHA-256 of `sub` — [ADR-0005](adr/0005-auth-zitadel-oidc-pkce.md)
 - Seeding at startup, never in migrations — [ADR-0006](adr/0006-seeding-at-startup-not-migrations.md)
 - Real dependencies in tests, no mocks — [ADR-0007](adr/0007-tests-use-real-dependencies.md)
@@ -151,7 +151,7 @@ wrappers with the same three-line recipe the library uses internally.
 
 One file per operation in its feature folder, named `<Verb><Noun>.cs`,
 containing the handler class and, when the operation can fail, its error enum
-(ADR-0003):
+(ADR-0001):
 
 | Operation        | Signature (conceptually)                                                | Errors                            |
 | ---------------- | ----------------------------------------------------------------------- | --------------------------------- |
@@ -206,7 +206,7 @@ DTO rules:
 - DTO properties are strong types; **optionality is encoded in nullability
   and nowhere else**. A required property is non-nullable in C#, `required` +
   non-nullable in the OpenAPI schema; an optional one is nullable in both.
-  The generated TypeScript mirrors this exactly (ADR-0004).
+  The generated TypeScript mirrors this exactly (ADR-0002).
 - API enums (`ReviewSort`) serialize as strings, are declared in the API
   layer, and map to domain enums with exhaustive switches — domain enums are
   never exposed on the wire.

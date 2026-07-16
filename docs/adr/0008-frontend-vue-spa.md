@@ -19,7 +19,7 @@ house preference (Vue reads closer to an MVC view layer).
   backend**, keeping the browser same-origin — no CORS configuration and no
   API URL in browser code. Aspire injects the proxy target as an environment
   variable.
-- All API calls go through the generated `openapi-fetch` client (ADR-0004);
+- All API calls go through the generated `openapi-fetch` client (ADR-0002);
   hand-written `fetch` calls to the API are a review blocker.
 - Frontend validation is derived from the generated schema types, not
   re-invented: the UI can pre-check what the schema states (required, min

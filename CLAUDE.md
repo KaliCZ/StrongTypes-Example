@@ -13,8 +13,8 @@ governs it:
 | Anything at all                    | [docs/technical-requirements.md](docs/technical-requirements.md) |
 | User-facing behavior               | [docs/business-requirements.md](docs/business-requirements.md) |
 | A decision that feels reversible   | The matching ADR in [docs/adr/](docs/adr/README.md) |
-| Validation, DTOs, domain types     | [ADR-0002](docs/adr/0002-validation-lives-in-the-type-system.md), [ADR-0003](docs/adr/0003-business-errors-are-result-enums.md) |
-| API surface / frontend types       | [ADR-0004](docs/adr/0004-openapi-is-the-frontend-contract.md) |
+| Validation, DTOs, domain types     | [ADR-0002](docs/adr/0002-validation-lives-in-the-type-system.md), [ADR-0001](docs/adr/0001-vertical-slices-and-project-layout.md) |
+| API surface / frontend types       | [ADR-0002](docs/adr/0002-validation-lives-in-the-type-system.md) |
 | Auth                               | [ADR-0005](docs/adr/0005-auth-zitadel-oidc-pkce.md) |
 | Tests                              | [ADR-0007](docs/adr/0007-tests-use-real-dependencies.md) |
 

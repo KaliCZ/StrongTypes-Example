@@ -19,12 +19,12 @@ Two hard rules:
 Format: **Status / Context / Decision / Consequences** (plus
 **Alternatives considered** where the rejected option is instructive).
 
+Numbers are identity, not sequence — a removed aspect leaves a gap.
+
 | #    | Decision                                                                                   | Status   |
 | ---- | ------------------------------------------------------------------------------------------ | -------- |
-| 0001 | [Vertical feature slices in one API project; controllers, no MediatR](0001-vertical-slices-and-project-layout.md) | Accepted |
-| 0002 | [Validation lives in the type system, not in annotations or guards](0002-validation-lives-in-the-type-system.md) | Accepted |
-| 0003 | [Business failures are enum values in `Result`, not exceptions](0003-business-errors-are-result-enums.md) | Accepted |
-| 0004 | [The OpenAPI document is the frontend contract](0004-openapi-is-the-frontend-contract.md)   | Accepted |
+| 0001 | [Vertical feature slices: one API project, controllers, `Result` error enums](0001-vertical-slices-and-project-layout.md) | Accepted |
+| 0002 | [Validation lives in the type system and flows end to end via OpenAPI](0002-validation-lives-in-the-type-system.md) | Accepted |
 | 0005 | [Auth is Zitadel OIDC + PKCE; author identity is a hash of `sub`](0005-auth-zitadel-oidc-pkce.md) | Accepted |
 | 0006 | [Seed data runs at startup, never inside migrations](0006-seeding-at-startup-not-migrations.md) | Accepted |
 | 0007 | [Tests exercise real dependencies; nothing is mocked](0007-tests-use-real-dependencies.md)  | Accepted |
