@@ -70,12 +70,13 @@ restart the AppHost.
    constructors demand the loaded data (`ProductWithReviews`,
    `ReviewWithVotes` via `CompleteQueries`) — never pass entities around and
    hope the navigation was included.
-8. **EF: set the navigation property together with the FK.** When assigning a
-   relationship by id (e.g. `ProductId`), also assign the navigation property
-   (`Product`) — in constructors, factory methods, and setters alike — so the
-   navigation is usable and non-null right after the call. The exception is
-   performance-sensitive batch work (inserting thousands of rows), where it's
-   fine to set only the id rather than load entities nothing will read.
+8. **Entity Framework: set the navigation property together with the FK.**
+   When assigning a relationship by ID (e.g. `ProductId`), also assign the
+   navigation property (`Product`) — in constructors, factory methods, and
+   setters alike — so that right after the call, `something.Product` is
+   usable and non-null. The exception is performance-sensitive work like
+   inserting thousands of rows in a batch: there it's fine to set only the ID
+   rather than load entities into memory that nothing will read.
 9. **Denormalized aggregates are recomputed, never incremented** — always from
    source rows, in the same `SaveChanges`.
 10. **Seeding happens at startup** (idempotent, through domain entities), never
@@ -85,14 +86,12 @@ restart the AppHost.
     assert raw JSON from anonymous payloads; property tests generate
     strong-typed values (`Kalicz.StrongTypes.FsCheck`). E2E signs in through
     the real Zitadel form.
-12. **Tests never reshape production code.** The domain model is designed for
-    the domain, not for testability. No signature, visibility, setter, or
-    constructor on a domain entity or business operation ever changes to
-    accommodate a test — no test-only overloads, no `InternalsVisibleTo`. If a
-    test needs some capability, the test figures out how to achieve it:
-    through the public domain API or dependency injection; when neither
-    suffices, by manipulating state itself (seed through EF, reflection as a
-    last resort).
+12. **Tests never reshape production code.** We use DDD: the domain model is
+    designed for the domain, not for testability. If a test needs some
+    capability, the test figures out how to achieve it — never add methods,
+    parameters, setters, or hooks to production code just so a test can reach
+    something. Dependency injection should be enough; otherwise the test
+    manipulates state itself (seed through EF, reflection as a last resort).
 13. **The OpenAPI document is the frontend contract.** Frontend code only
     calls the API through the generated `openapi-fetch` client. After changing
     any DTO/route: run the stack, `npm --prefix frontend run refresh:api`,
@@ -107,8 +106,10 @@ restart the AppHost.
 - UTC instants end in `Utc` (`CreatedAtUtc`). Identifiers are spelled out —
   no abbreviations.
 - Private fields are camelCase without an underscore prefix.
-- No local functions inside methods — extract a normal method. The only
-  exception is a trivial helper of up to ~3 lines.
+- No nested local functions — write a normal method. Don't reach for local
+  functions; extract a private method instead. A one-liner local function can
+  occasionally be acceptable, but that's an edge case, not something to aim
+  for.
 - Comments only for a non-obvious *why*, one sentence; when in doubt, none.
 - Correctness analyzer rules are build errors (see [.editorconfig](.editorconfig));
   style rules are suggestions. `TreatWarningsAsErrors` is on.

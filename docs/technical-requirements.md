@@ -293,27 +293,29 @@ per test; no mocking anywhere (ADR-0007). The OpenAPI document itself is
 asserted in integration tests (email format, `minLength`, `exclusiveMinimum`,
 rating bounds) — it is the demo's headline claim.
 
-**Tests never reshape production code.** The domain model is designed for the
-domain, not for testability. No signature, visibility, setter, or constructor
-on a domain entity or business operation ever changes to accommodate a test —
-no test-only overloads, no `InternalsVisibleTo`. If a test needs some
-capability, the test figures out how to achieve it: through the public domain
-API or dependency injection; when neither suffices, by manipulating state
-itself (seeding through EF, reflection as a last resort).
+**Tests never reshape production code.** We use DDD: the domain model is
+designed for the domain, not for testability. If a test needs some
+capability, the test figures out how to achieve it — never add methods,
+parameters, setters, or hooks to production code just so a test can reach
+something. Dependency injection should be enough; otherwise the test
+manipulates state itself (seeding through EF, reflection as a last resort).
 
 ## 12. Coding conventions
 
 - **Naming:** UTC instants end in `Utc` (`CreatedAtUtc`); identifiers are
   spelled out in full — no abbreviations; private fields are camelCase without
   an underscore prefix.
-- **No local functions inside methods** — extract a normal method instead;
-  the only exception is a trivial helper of up to ~3 lines.
-- **Entity Framework: set the navigation property together with the FK** —
-  when assigning a relationship by id (e.g. `ProductId`), also assign the
-  navigation property, in constructors, factory methods, and setters alike,
-  so the navigation is usable and non-null right after the call; for
-  performance-sensitive batch inserts it's fine to set only the id rather
-  than load entities nothing will read.
+- **No nested local functions — write a normal method.** Don't reach for
+  local functions; extract a private method instead. A one-liner local
+  function can occasionally be acceptable, but that's an edge case, not
+  something to aim for.
+- **Entity Framework: set the navigation property together with the FK.**
+  When assigning a relationship by ID (e.g. `ProductId`), also assign the
+  navigation property (`Product`) — in constructors, factory methods, and
+  setters alike — so that right after the call, `something.Product` is usable
+  and non-null. The exception is performance-sensitive work like inserting
+  thousands of rows in a batch: there it's fine to set only the ID rather
+  than load entities into memory that nothing will read.
 - **Comments** only where they capture a non-obvious *why*; when in doubt,
   none.
 - **Exhaustive switches:** enum switch expressions never have a `default`/`_`
