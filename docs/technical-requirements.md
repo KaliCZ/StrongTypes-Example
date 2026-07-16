@@ -17,14 +17,14 @@ into the database and back out into the generated TypeScript client.
 | --------------- | ---------------------------------------------------------------------- |
 | Backend         | ASP.NET Core Web API, controllers (ADR-0001), C# 14 / `net10.0`         |
 | Validation      | `Kalicz.StrongTypes` types only — no data annotations (ADR-0002)        |
-| Error handling  | `Result<T, TError>` + per-operation error enums (ADR-0003)              |
+| Error handling  | `Result<T, TError>` + per-operation error enums (ADR-0001)              |
 | Persistence     | PostgreSQL via EF Core (Npgsql), `.UseStrongTypes()`                    |
-| Auth            | Zitadel (OIDC, PKCE SPA client) + `JwtBearer` (ADR-0005)                |
-| API docs        | Swashbuckle + `Kalicz.StrongTypes.OpenApi.Swashbuckle` (ADR-0004)       |
-| Frontend        | Vue 3 + Vite + TypeScript SPA (ADR-0008)                                |
+| Auth            | Zitadel (OIDC, PKCE SPA client) + `JwtBearer` (ADR-0003)                |
+| API docs        | Swashbuckle + `Kalicz.StrongTypes.OpenApi.Swashbuckle` (ADR-0002)       |
+| Frontend        | Vue 3 + Vite + TypeScript SPA (ADR-0006)                                |
 | Frontend client | Generated: `openapi-typescript` types + `openapi-fetch` runtime         |
 | Orchestration   | .NET Aspire AppHost: Postgres, Zitadel, API, frontend                   |
-| Backend tests   | xUnit + FsCheck (property) + Testcontainers Postgres (ADR-0007)         |
+| Backend tests   | xUnit + FsCheck (property) + Testcontainers Postgres (ADR-0005)         |
 | Frontend tests  | Vitest (unit/component) + Playwright (E2E against the real stack)       |
 
 ```mermaid
@@ -34,12 +34,11 @@ flowchart LR
     end
     subgraph Aspire AppHost
         FE[Vite dev server<br/>proxies /api]
-        API[ProductReviews.Api<br/>controllers + DTOs]
-        DOM[ProductReviews.Domain<br/>entities + handlers + EF Core]
+        API[ProductReviews.Api<br/>feature slices: controllers + DTOs<br/>+ entities + handlers + EF Core]
         PG[(PostgreSQL)]
         ZIT[Zitadel<br/>OIDC provider]
     end
-    SPA -->|/api/*| FE -->|proxy| API --> DOM --> PG
+    SPA -->|/api/*| FE -->|proxy| API --> PG
     SPA -->|OIDC redirect + token| ZIT
     API -->|JWKS / discovery| ZIT
     ZIT --> PG
@@ -52,22 +51,17 @@ flowchart LR
 ├── docs/                          # this spec: requirements + ADRs
 ├── src/
 │   ├── ProductReviews.AppHost/          # Aspire orchestration + Zitadel provisioning
-│   ├── ProductReviews.ServiceDefaults/  # OTel, health checks, resilience (own namespace)
-│   ├── ProductReviews.Api/
-│   │   ├── Features/
-│   │   │   ├── Catalog/                 # controller + response DTOs + mapping
-│   │   │   ├── Reviews/                 # controller + request/response DTOs + mapping
-│   │   │   ├── Votes/
-│   │   │   └── Profile/                 # GET /api/me
-│   │   ├── Infrastructure/              # one concern per file (§9)
-│   │   └── Program.cs                   # thin orchestrator, calls the slices
-│   └── ProductReviews.Domain/
-│       ├── Catalog/                     # Product entity + catalog queries
-│       ├── Reviews/                     # Review, Rating, submit/edit/delete handlers
-│       ├── Votes/                       # ReviewVote + cast/remove handlers
-│       └── Persistence/                 # DbContext, configurations, migrations, seeding
+│   └── ProductReviews.Api/              # the whole backend (ADR-0001)
+│       ├── Features/                    # a folder owns its entire slice
+│       │   ├── Catalog/                 # Product entity + queries + controller + DTOs
+│       │   ├── Reviews/                 # Review, Rating, handlers + controller + DTOs
+│       │   ├── Votes/                   # ReviewVote + cast/remove + controller + DTOs
+│       │   └── Profile/                 # GET /api/me
+│       ├── Persistence/                 # DbContext, configurations, migrations, seeding
+│       ├── Infrastructure/              # one concern per file (§9)
+│       └── Program.cs                   # thin orchestrator, calls the slices
 ├── tests/
-│   ├── ProductReviews.Domain.Tests/         # unit + FsCheck property tests
+│   ├── ProductReviews.Api.UnitTests/        # unit + FsCheck property tests
 │   └── ProductReviews.Api.IntegrationTests/ # Testcontainers Postgres, wire-level
 ├── frontend/                         # Vue 3 + Vite SPA
 │   ├── src/api/                      # generated schema types + typed client
@@ -82,15 +76,15 @@ flowchart LR
 
 Each of these is an ADR; the numbered file is the authority:
 
-- Feature slices in two projects, controllers, no MediatR, DTO layer owned by
-  the API, proof-of-loading read models — [ADR-0001](adr/0001-vertical-slices-and-project-layout.md)
-- Strong types are the only validation; no annotations, no guards — [ADR-0002](adr/0002-validation-lives-in-the-type-system.md)
-- `Result<T, TError>` + error enums; controllers map to HTTP — [ADR-0003](adr/0003-business-errors-are-result-enums.md)
-- OpenAPI is the frontend contract; client generated + drift-checked — [ADR-0004](adr/0004-openapi-is-the-frontend-contract.md)
-- Zitadel OIDC + PKCE; `AuthorId` = SHA-256 of `sub` — [ADR-0005](adr/0005-auth-zitadel-oidc-pkce.md)
-- Seeding at startup, never in migrations — [ADR-0006](adr/0006-seeding-at-startup-not-migrations.md)
-- Real dependencies in tests, no mocks — [ADR-0007](adr/0007-tests-use-real-dependencies.md)
-- Vue 3 + Vite SPA, same-origin proxy to the API — [ADR-0008](adr/0008-frontend-vue-spa.md)
+- Feature slices in one API project, controllers, no MediatR, `Result` error
+  enums mapped to HTTP in controllers, DTO layer owned by the API,
+  proof-of-loading read models — [ADR-0001](adr/0001-vertical-slices-and-project-layout.md)
+- Strong types are the only validation, and the constraints flow through
+  OpenAPI into the generated, drift-checked frontend client — [ADR-0002](adr/0002-validation-lives-in-the-type-system.md)
+- Zitadel OIDC + PKCE; `AuthorId` = SHA-256 of `sub` — [ADR-0003](adr/0003-auth-zitadel-oidc-pkce.md)
+- Seeding at startup, never in migrations — [ADR-0004](adr/0004-seeding-at-startup-not-migrations.md)
+- Real dependencies in tests, no mocks — [ADR-0005](adr/0005-tests-use-real-dependencies.md)
+- Vue 3 + Vite SPA, same-origin proxy to the API — [ADR-0006](adr/0006-frontend-vue-spa.md)
 
 ## 4. Domain model
 
@@ -155,9 +149,9 @@ wrappers with the same three-line recipe the library uses internally.
 
 ## 5. Domain operations
 
-One file per operation in `ProductReviews.Domain`, named `<Verb><Noun>.cs`,
+One file per operation in its feature folder, named `<Verb><Noun>.cs`,
 containing the handler class and, when the operation can fail, its error enum
-(ADR-0003):
+(ADR-0001):
 
 | Operation        | Signature (conceptually)                                                | Errors                            |
 | ---------------- | ----------------------------------------------------------------------- | --------------------------------- |
@@ -212,7 +206,7 @@ DTO rules:
 - DTO properties are strong types; **optionality is encoded in nullability
   and nowhere else**. A required property is non-nullable in C#, `required` +
   non-nullable in the OpenAPI schema; an optional one is nullable in both.
-  The generated TypeScript mirrors this exactly (ADR-0004).
+  The generated TypeScript mirrors this exactly (ADR-0002).
 - API enums (`ReviewSort`) serialize as strings, are declared in the API
   layer, and map to domain enums with exhaustive switches — domain enums are
   never exposed on the wire.
@@ -221,7 +215,7 @@ DTO rules:
   `ValidationProblem` with a field key; missing resources become 404;
   ownership violations become 403; duplicates become 409.
 
-## 7. Auth (summary — ADR-0005 is the authority)
+## 7. Auth (summary — ADR-0003 is the authority)
 
 Zitadel runs as an Aspire-managed container; the AppHost idempotently
 provisions the org/project/PKCE SPA client and two demo users, and injects
@@ -256,11 +250,17 @@ class with `Configure(builder)` and, where middleware exists, `Use(app)`:
 | `OpenApi.cs`       | Swagger UI + `AddStrongTypes()` + `Rating` schema mapping         |
 | `RateLimits.cs`    | Fixed-window limiter on write endpoints                           |
 | `ErrorHandling.cs` | Consistent RFC 7807 output for unhandled failures                 |
-| `Observability.cs` | Health checks (`/health`, `/alive`, DbContext check)              |
+| `Observability.cs` | OpenTelemetry logging/metrics/tracing, OTLP export                |
+| `Health.cs`        | Health checks and the `/health` + `/alive` endpoints              |
 
-OpenTelemetry, service discovery, and HTTP resilience come from
-`ProductReviews.ServiceDefaults` — which lives in its **own** namespace
-(`ProductReviews.ServiceDefaults`), not a hijacked framework namespace.
+Health follows the house pattern: `/alive` is liveness only — the
+commit-hash check (`version`, from the assembly's `SourceRevisionId`) and no
+dependencies, so a shared Postgres or Zitadel outage never reads as a dead
+process. `/health` is full readiness: the EF Core `DbContext` check
+(`database`) plus every transitive dependency (`zitadel`, probing the OIDC
+discovery document — Degraded, not Unhealthy, because reads survive an
+identity-provider outage). Both endpoints answer `"<status> <commit>"`, so a
+deploy gate can grep the running build.
 
 ## 10. Local development & orchestration
 
@@ -269,7 +269,7 @@ OpenTelemetry, service discovery, and HTTP resilience come from
   databases: `productreviews`, `zitadel`), Zitadel (+ its login UI
   container), the API, and the frontend dev server; installs frontend
   dependencies on first run; provisions Zitadel; and opens the dashboard.
-- The API migrates (`MigrateAsync`) and seeds (ADR-0006) at startup in
+- The API migrates (`MigrateAsync`) and seeds (ADR-0004) at startup in
   Development. Ten products with reviews and votes are browsable immediately.
 - Fixed ports where the browser needs stability (Zitadel issuer `:8090`,
   frontend `:5173` dev / `:4173` E2E); everything else is dynamic and flows
@@ -280,7 +280,7 @@ OpenTelemetry, service discovery, and HTTP resilience come from
 
 | Suite | Project / tool | What it proves |
 | --- | --- | --- |
-| Domain unit | `ProductReviews.Domain.Tests` (xUnit) | Entity behavior and invariants — pure, no I/O |
+| Domain unit | `ProductReviews.Api.UnitTests` (xUnit) | Entity behavior and invariants — pure, no I/O |
 | Property | same project, FsCheck + `Kalicz.StrongTypes.FsCheck` | Invariants hold across generated strong-typed inputs (score arithmetic, edit semantics, rating bounds) |
 | API integration | `ProductReviews.Api.IntegrationTests` (xUnit, Testcontainers) | Wire-level behavior against real Postgres: contracts, constraints, error mapping, OpenAPI content |
 | Frontend unit | Vitest + Vue Test Utils | Component logic; PATCH body construction (three-state semantics) |
@@ -289,7 +289,7 @@ OpenTelemetry, service discovery, and HTTP resilience come from
 Test conventions: `Method_Condition_ExpectedResult` naming; integration tests
 send anonymous objects and assert on raw `JsonElement`s (contract renames must
 fail tests); one shared Postgres container per run, isolation via unique data
-per test; no mocking anywhere (ADR-0007). The OpenAPI document itself is
+per test; no mocking anywhere (ADR-0005). The OpenAPI document itself is
 asserted in integration tests (email format, `minLength`, `exclusiveMinimum`,
 rating bounds) — it is the demo's headline claim.
 

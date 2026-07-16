@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 // The E2E stack is the real thing: the Aspire AppHost boots Postgres, Zitadel (+ its
 // hosted login), the API, and this frontend as a production preview build on :4173.
-// Sign-in happens through the real Zitadel form — no bypass (ADR-0007).
+// Sign-in happens through the real Zitadel form — no bypass (ADR-0005).
 const webBaseUrl = "http://localhost:4173";
 
 export default defineConfig({

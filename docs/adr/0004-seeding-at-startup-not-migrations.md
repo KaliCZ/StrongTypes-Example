@@ -1,4 +1,4 @@
-# ADR-0006 — Seed data runs at startup, never inside migrations
+# ADR-0004 — Seed data runs at startup, never inside migrations
 
 **Status:** Accepted (2026-07-15)
 
