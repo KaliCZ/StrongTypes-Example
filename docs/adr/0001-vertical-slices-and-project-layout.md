@@ -1,6 +1,6 @@
 # ADR-0001 — Vertical feature slices in two projects; controllers, no MediatR
 
-**Status:** Accepted (2026-07-15)
+**Status:** Superseded by [ADR-0009](0009-single-api-project.md) (2026-07-16)
 
 ## Context
 
