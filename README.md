@@ -54,15 +54,15 @@ Where to click:
 | The point | Where |
 | --- | --- |
 | DTOs with strong types, zero annotations | [ReviewContracts.cs](src/ProductReviews.Api/Features/Reviews/ReviewContracts.cs) |
-| `Maybe<T>` three-state PATCH (omit = keep, `{}` = clear, `{"Value": …}` = set) | [EditReviewRequest](src/ProductReviews.Api/Features/Reviews/ReviewContracts.cs), [Review.ApplyEdit](src/ProductReviews.Domain/Reviews/Review.cs), [EditReview.cs](src/ProductReviews.Domain/Reviews/EditReview.cs) |
-| `Result<T, TError>` + error enums instead of exceptions | [SubmitReview.cs](src/ProductReviews.Domain/Reviews/SubmitReview.cs) → mapped exhaustively in [ReviewsController.cs](src/ProductReviews.Api/Features/Reviews/ReviewsController.cs) |
-| Declaring your **own** strong type (`[NumericWrapper]`) | [Rating.cs](src/ProductReviews.Domain/Reviews/Rating.cs) |
-| EF Core storing strong types directly (`UseStrongTypes()`) | [Persistence.cs](src/ProductReviews.Api/Infrastructure/Persistence.cs), [ReviewsDbContext.cs](src/ProductReviews.Domain/Persistence/ReviewsDbContext.cs), the [migration](src/ProductReviews.Domain/Persistence/Migrations/) (plain `varchar`/`int` columns) |
+| `Maybe<T>` three-state PATCH (omit = keep, `{}` = clear, `{"Value": …}` = set) | [EditReviewRequest](src/ProductReviews.Api/Features/Reviews/ReviewContracts.cs), [Review.ApplyEdit](src/ProductReviews.Api/Features/Reviews/Review.cs), [EditReview.cs](src/ProductReviews.Api/Features/Reviews/EditReview.cs) |
+| `Result<T, TError>` + error enums instead of exceptions | [SubmitReview.cs](src/ProductReviews.Api/Features/Reviews/SubmitReview.cs) → mapped exhaustively in [ReviewsController.cs](src/ProductReviews.Api/Features/Reviews/ReviewsController.cs) |
+| Declaring your **own** strong type (`[NumericWrapper]`) | [Rating.cs](src/ProductReviews.Api/Features/Reviews/Rating.cs) |
+| EF Core storing strong types directly (`UseStrongTypes()`) | [Persistence.cs](src/ProductReviews.Api/Infrastructure/Persistence.cs), [ReviewsDbContext.cs](src/ProductReviews.Api/Persistence/ReviewsDbContext.cs), the [migration](src/ProductReviews.Api/Persistence/Migrations/) (plain `varchar`/`int` columns) |
 | OpenAPI carrying the real constraints (`AddStrongTypes()`) | [OpenApi.cs](src/ProductReviews.Api/Infrastructure/OpenApi.cs), snapshot in [frontend/openapi.json](frontend/openapi.json) |
 | Constraints flowing into TypeScript (generated client) | [schema.d.ts](frontend/src/api/schema.d.ts) (generated), [client.ts](frontend/src/api/client.ts), [editReviewBody.ts](frontend/src/api/editReviewBody.ts) |
-| Property-based tests with generated strong-typed values | [RatingTests.cs](tests/ProductReviews.Domain.Tests/RatingTests.cs), [ReviewEditTests.cs](tests/ProductReviews.Domain.Tests/ReviewEditTests.cs) |
+| Property-based tests with generated strong-typed values | [RatingTests.cs](tests/ProductReviews.Api.UnitTests/RatingTests.cs), [ReviewEditTests.cs](tests/ProductReviews.Api.UnitTests/ReviewEditTests.cs) |
 | The OpenAPI claims verified against the running API | [OpenApiDocumentTests.cs](tests/ProductReviews.Api.IntegrationTests/OpenApiDocumentTests.cs) |
-| Parse-don't-validate at the query boundary (`Positive<int>` paging, `Rating[]` filters) | [ReviewsController.cs](src/ProductReviews.Api/Features/Reviews/ReviewsController.cs), [GetReviewsPage.cs](src/ProductReviews.Domain/Reviews/GetReviewsPage.cs) |
+| Parse-don't-validate at the query boundary (`Positive<int>` paging, `Rating[]` filters) | [ReviewsController.cs](src/ProductReviews.Api/Features/Reviews/ReviewsController.cs), [GetReviewsPage.cs](src/ProductReviews.Api/Features/Reviews/GetReviewsPage.cs) |
 
 ## Tests
 

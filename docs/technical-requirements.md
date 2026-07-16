@@ -34,12 +34,11 @@ flowchart LR
     end
     subgraph Aspire AppHost
         FE[Vite dev server<br/>proxies /api]
-        API[ProductReviews.Api<br/>controllers + DTOs]
-        DOM[ProductReviews.Domain<br/>entities + handlers + EF Core]
+        API[ProductReviews.Api<br/>feature slices: controllers + DTOs<br/>+ entities + handlers + EF Core]
         PG[(PostgreSQL)]
         ZIT[Zitadel<br/>OIDC provider]
     end
-    SPA -->|/api/*| FE -->|proxy| API --> DOM --> PG
+    SPA -->|/api/*| FE -->|proxy| API --> PG
     SPA -->|OIDC redirect + token| ZIT
     API -->|JWKS / discovery| ZIT
     ZIT --> PG
@@ -52,22 +51,17 @@ flowchart LR
 ├── docs/                          # this spec: requirements + ADRs
 ├── src/
 │   ├── ProductReviews.AppHost/          # Aspire orchestration + Zitadel provisioning
-│   ├── ProductReviews.ServiceDefaults/  # OTel, health checks, resilience (own namespace)
-│   ├── ProductReviews.Api/
-│   │   ├── Features/
-│   │   │   ├── Catalog/                 # controller + response DTOs + mapping
-│   │   │   ├── Reviews/                 # controller + request/response DTOs + mapping
-│   │   │   ├── Votes/
-│   │   │   └── Profile/                 # GET /api/me
-│   │   ├── Infrastructure/              # one concern per file (§9)
-│   │   └── Program.cs                   # thin orchestrator, calls the slices
-│   └── ProductReviews.Domain/
-│       ├── Catalog/                     # Product entity + catalog queries
-│       ├── Reviews/                     # Review, Rating, submit/edit/delete handlers
-│       ├── Votes/                       # ReviewVote + cast/remove handlers
-│       └── Persistence/                 # DbContext, configurations, migrations, seeding
+│   └── ProductReviews.Api/              # the whole backend (ADR-0009)
+│       ├── Features/                    # a folder owns its entire slice
+│       │   ├── Catalog/                 # Product entity + queries + controller + DTOs
+│       │   ├── Reviews/                 # Review, Rating, handlers + controller + DTOs
+│       │   ├── Votes/                   # ReviewVote + cast/remove + controller + DTOs
+│       │   └── Profile/                 # GET /api/me
+│       ├── Persistence/                 # DbContext, configurations, migrations, seeding
+│       ├── Infrastructure/              # one concern per file (§9)
+│       └── Program.cs                   # thin orchestrator, calls the slices
 ├── tests/
-│   ├── ProductReviews.Domain.Tests/         # unit + FsCheck property tests
+│   ├── ProductReviews.Api.UnitTests/        # unit + FsCheck property tests
 │   └── ProductReviews.Api.IntegrationTests/ # Testcontainers Postgres, wire-level
 ├── frontend/                         # Vue 3 + Vite SPA
 │   ├── src/api/                      # generated schema types + typed client
@@ -82,8 +76,9 @@ flowchart LR
 
 Each of these is an ADR; the numbered file is the authority:
 
-- Feature slices in two projects, controllers, no MediatR, DTO layer owned by
-  the API, proof-of-loading read models — [ADR-0001](adr/0001-vertical-slices-and-project-layout.md)
+- Feature slices in one API project, controllers, no MediatR, DTO layer owned
+  by the API, proof-of-loading read models — [ADR-0009](adr/0009-single-api-project.md)
+  (supersedes [ADR-0001](adr/0001-vertical-slices-and-project-layout.md))
 - Strong types are the only validation; no annotations, no guards — [ADR-0002](adr/0002-validation-lives-in-the-type-system.md)
 - `Result<T, TError>` + error enums; controllers map to HTTP — [ADR-0003](adr/0003-business-errors-are-result-enums.md)
 - OpenAPI is the frontend contract; client generated + drift-checked — [ADR-0004](adr/0004-openapi-is-the-frontend-contract.md)
@@ -155,7 +150,7 @@ wrappers with the same three-line recipe the library uses internally.
 
 ## 5. Domain operations
 
-One file per operation in `ProductReviews.Domain`, named `<Verb><Noun>.cs`,
+One file per operation in its feature folder, named `<Verb><Noun>.cs`,
 containing the handler class and, when the operation can fail, its error enum
 (ADR-0003):
 
@@ -256,11 +251,17 @@ class with `Configure(builder)` and, where middleware exists, `Use(app)`:
 | `OpenApi.cs`       | Swagger UI + `AddStrongTypes()` + `Rating` schema mapping         |
 | `RateLimits.cs`    | Fixed-window limiter on write endpoints                           |
 | `ErrorHandling.cs` | Consistent RFC 7807 output for unhandled failures                 |
-| `Observability.cs` | Health checks (`/health`, `/alive`, DbContext check)              |
+| `Observability.cs` | OpenTelemetry logging/metrics/tracing, OTLP export                |
+| `Health.cs`        | Health checks and the `/health` + `/alive` endpoints              |
 
-OpenTelemetry, service discovery, and HTTP resilience come from
-`ProductReviews.ServiceDefaults` — which lives in its **own** namespace
-(`ProductReviews.ServiceDefaults`), not a hijacked framework namespace.
+Health follows the house pattern: `/alive` is liveness only — the
+commit-hash check (`version`, from the assembly's `SourceRevisionId`) and no
+dependencies, so a shared Postgres or Zitadel outage never reads as a dead
+process. `/health` is full readiness: the EF Core `DbContext` check
+(`database`) plus every transitive dependency (`zitadel`, probing the OIDC
+discovery document — Degraded, not Unhealthy, because reads survive an
+identity-provider outage). Both endpoints answer `"<status> <commit>"`, so a
+deploy gate can grep the running build.
 
 ## 10. Local development & orchestration
 
@@ -280,7 +281,7 @@ OpenTelemetry, service discovery, and HTTP resilience come from
 
 | Suite | Project / tool | What it proves |
 | --- | --- | --- |
-| Domain unit | `ProductReviews.Domain.Tests` (xUnit) | Entity behavior and invariants — pure, no I/O |
+| Domain unit | `ProductReviews.Api.UnitTests` (xUnit) | Entity behavior and invariants — pure, no I/O |
 | Property | same project, FsCheck + `Kalicz.StrongTypes.FsCheck` | Invariants hold across generated strong-typed inputs (score arithmetic, edit semantics, rating bounds) |
 | API integration | `ProductReviews.Api.IntegrationTests` (xUnit, Testcontainers) | Wire-level behavior against real Postgres: contracts, constraints, error mapping, OpenAPI content |
 | Frontend unit | Vitest + Vue Test Utils | Component logic; PATCH body construction (three-state semantics) |

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using ProductReviews.Domain.Persistence;
-using ProductReviews.Domain.Persistence.Seeding;
+using ProductReviews.Api.Persistence;
+using ProductReviews.Api.Persistence.Seeding;
 using StrongTypes.EfCore;
 
 namespace ProductReviews.Api.Infrastructure;
@@ -13,6 +13,8 @@ public static class Persistence
     public static void Configure(WebApplicationBuilder builder)
         => builder.AddNpgsqlDbContext<ReviewsDbContext>(
             DatabaseResourceName,
+            // The explicit "database" check in Health.cs is the one source of DB health.
+            configureSettings: settings => settings.DisableHealthChecks = true,
             configureDbContextOptions: options => options.UseStrongTypes());
 
     /// <summary>Development-only convenience (ADR-0006): production applies migrations

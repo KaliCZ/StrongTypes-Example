@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductReviews.Api.Infrastructure;
-using ProductReviews.Domain.Catalog;
 using StrongTypes;
 
 namespace ProductReviews.Api.Features.Catalog;
