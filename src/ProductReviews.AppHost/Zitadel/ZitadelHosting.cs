@@ -1,6 +1,6 @@
 namespace ProductReviews.AppHost.Zitadel;
 
-/// <summary>The self-hosted Zitadel containers (ADR-0005): the core (API + Console) and the
+/// <summary>The self-hosted Zitadel containers (ADR-0003): the core (API + Console) and the
 /// separate Login V2 app the core redirects browsers to for the hosted sign-in page.</summary>
 internal static class ZitadelHosting
 {

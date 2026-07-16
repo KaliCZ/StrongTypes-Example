@@ -1,4 +1,3 @@
-using ProductReviews.Domain.Catalog;
 using StrongTypes;
 
 namespace ProductReviews.Api.Features.Catalog;

@@ -2,18 +2,27 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Kalicz.StrongTypes" />
     <PackageReference Include="Kalicz.StrongTypes.AspNetCore" />
+    <PackageReference Include="Kalicz.StrongTypes.EfCore" />
     <PackageReference Include="Kalicz.StrongTypes.OpenApi.Swashbuckle" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-    <!-- Explicit floors: the Aspire component pulls an older transitive EF that conflicts with the Domain's at build and at runtime. -->
+    <!-- Explicit floors: the Aspire component and StrongTypes.EfCore pull older transitive EF versions. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ProductReviews.Domain\ProductReviews.Domain.csproj" />
-    <ProjectReference Include="..\ProductReviews.ServiceDefaults\ProductReviews.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

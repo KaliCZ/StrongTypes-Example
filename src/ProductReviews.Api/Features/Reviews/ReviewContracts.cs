@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using ProductReviews.Domain.Reviews;
 using StrongTypes;
 
 namespace ProductReviews.Api.Features.Reviews;

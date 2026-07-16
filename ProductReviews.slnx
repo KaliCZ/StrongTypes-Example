@@ -2,11 +2,9 @@
   <Folder Name="/src/">
     <Project Path="src/ProductReviews.Api/ProductReviews.Api.csproj" />
     <Project Path="src/ProductReviews.AppHost/ProductReviews.AppHost.csproj" />
-    <Project Path="src/ProductReviews.Domain/ProductReviews.Domain.csproj" />
-    <Project Path="src/ProductReviews.ServiceDefaults/ProductReviews.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/ProductReviews.Api.IntegrationTests/ProductReviews.Api.IntegrationTests.csproj" />
-    <Project Path="tests/ProductReviews.Domain.Tests/ProductReviews.Domain.Tests.csproj" />
+    <Project Path="tests/ProductReviews.Api.UnitTests/ProductReviews.Api.UnitTests.csproj" />
   </Folder>
 </Solution>

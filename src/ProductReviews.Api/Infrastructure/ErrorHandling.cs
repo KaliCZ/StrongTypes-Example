@@ -1,7 +1,7 @@
 namespace ProductReviews.Api.Infrastructure;
 
 /// <summary>Unhandled exceptions become RFC 7807 responses. Business failures never get
-/// here — they travel as Result error enums and are mapped by controllers (ADR-0003).</summary>
+/// here — they travel as Result error enums and are mapped by controllers (ADR-0001).</summary>
 public static class ErrorHandling
 {
     public static void Configure(WebApplicationBuilder builder)

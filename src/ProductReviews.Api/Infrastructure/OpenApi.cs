@@ -1,12 +1,12 @@
 using Microsoft.OpenApi;
-using ProductReviews.Domain.Reviews;
+using ProductReviews.Api.Features.Reviews;
 using StrongTypes.OpenApi.Swashbuckle;
 
 namespace ProductReviews.Api.Infrastructure;
 
 /// <summary>Swashbuckle with AddStrongTypes(), so the document carries the real
 /// constraints (email format, minLength, exclusiveMinimum). The generated TypeScript
-/// client is built from this document — it is the frontend contract (ADR-0004).</summary>
+/// client is built from this document — it is the frontend contract (ADR-0002).</summary>
 public static class OpenApi
 {
     public static void Configure(WebApplicationBuilder builder)
