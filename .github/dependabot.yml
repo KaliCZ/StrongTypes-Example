@@ -30,3 +30,7 @@ updates:
       npm:
         patterns:
           - "*"
+    ignore:
+      # openapi-typescript peer-requires typescript ^5.x — drop when it supports TS 7.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
