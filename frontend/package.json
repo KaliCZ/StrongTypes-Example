@@ -20,7 +20,7 @@
     "oidc-client-ts": "^3.5.0",
     "openapi-fetch": "^0.17.0",
     "pinia": "^4.0.2",
-    "vue": "^3.5.39",
+    "vue": "^3.5.40",
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
@@ -28,12 +28,12 @@
     "@types/node": "^26.1.1",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.4.11",
-    "happy-dom": "^20.10.6",
+    "happy-dom": "^20.11.1",
     "openapi-typescript": "^7.13.0",
-    "prettier": "3.9.5",
+    "prettier": "3.9.6",
     "typescript": "~5.9.3",
-    "vite": "^8.1.4",
+    "vite": "^8.1.5",
     "vitest": "^4.1.10",
-    "vue-tsc": "^3.3.7"
+    "vue-tsc": "^3.3.8"
   }
 }
