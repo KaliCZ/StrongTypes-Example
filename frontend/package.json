@@ -24,7 +24,7 @@
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^26.1.2",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.4.11",
@@ -32,8 +32,8 @@
     "openapi-typescript": "^7.13.0",
     "prettier": "3.9.6",
     "typescript": "~5.9.3",
-    "vite": "^8.1.5",
+    "vite": "^8.2.0",
     "vitest": "^4.1.10",
-    "vue-tsc": "^3.3.8"
+    "vue-tsc": "^3.3.9"
   }
 }
