@@ -20,6 +20,10 @@ updates:
       nuget:
         patterns:
           - "*"
+    ignore:
+      # FsCheck.Xunit.v3 is built against xunit.v3.extensibility.core 3.x — drop when it supports xunit.v3 4.
+      - dependency-name: xunit.v3
+        update-types: ["version-update:semver-major"]
 
   # Frontend — npm packages from frontend/package.json.
   - package-ecosystem: npm
